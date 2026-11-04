@@ -1,0 +1,278 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Сетевая шпаргалка</title>
+<style>
+  :root{
+    --bg:#0f172a; --panel:#1e293b; --panel2:#273449;
+    --text:#e2e8f0; --muted:#94a3b8; --accent:#38bdf8;
+    --ok:#22c55e; --warn:#f59e0b; --bad:#ef4444; --border:#334155;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;
+    background:var(--bg); color:var(--text); line-height:1.6;
+  }
+  header{
+    position:sticky; top:0; z-index:10;
+    background:rgba(15,23,42,.95); backdrop-filter:blur(6px);
+    border-bottom:1px solid var(--border); padding:14px 20px;
+  }
+  header h1{margin:0; font-size:1.25rem}
+  header p{margin:4px 0 0; color:var(--muted); font-size:.85rem}
+  nav{
+    position:sticky; top:0; z-index:9; background:var(--panel);
+    border-bottom:1px solid var(--border);
+    display:flex; flex-wrap:wrap; gap:6px; padding:10px 20px;
+  }
+  nav a{
+    color:var(--text); text-decoration:none; font-size:.85rem;
+    background:var(--panel2); padding:6px 12px; border-radius:999px;
+    border:1px solid var(--border); transition:.15s;
+  }
+  nav a:hover{background:var(--accent); color:#0f172a; border-color:var(--accent)}
+  main{max-width:1000px; margin:0 auto; padding:24px 20px 60px}
+  section{margin-bottom:38px; scroll-margin-top:90px}
+  section h2{
+    font-size:1.2rem; margin:0 0 14px; padding-bottom:8px;
+    border-bottom:1px solid var(--border); color:var(--accent);
+  }
+  section h3{margin:18px 0 8px; font-size:1rem; color:#fbbf24}
+  .card{
+    background:var(--panel); border:1px solid var(--border);
+    border-radius:10px; padding:14px 16px; margin-bottom:12px;
+  }
+  .card b{color:#fde68a}
+  code{
+    background:#0b1220; color:#7dd3fc; padding:2px 6px;
+    border-radius:4px; font-family:ui-monospace,Consolas,monospace;
+    font-size:.9em;
+  }
+  pre{
+    background:#0b1220; border:1px solid var(--border); border-radius:8px;
+    padding:12px; overflow-x:auto;
+  }
+  pre code{background:none; padding:0; color:#a5f3fc}
+  table{
+    width:100%; border-collapse:collapse; margin:10px 0;
+    background:var(--panel); border-radius:8px; overflow:hidden;
+  }
+  th,td{padding:9px 12px; text-align:left; border-bottom:1px solid var(--border); font-size:.92rem}
+  th{background:var(--panel2); color:var(--accent)}
+  tr:last-child td{border-bottom:none}
+  .ok{color:var(--ok)} .bad{color:var(--bad)} .warn{color:var(--warn)}
+  ul{margin:6px 0 0 0; padding-left:20px}
+  footer{
+    text-align:center; color:var(--muted); font-size:.8rem;
+    padding:20px; border-top:1px solid var(--border);
+  }
+  .top{
+    position:fixed; right:20px; bottom:20px; z-index:20;
+    background:var(--accent); color:#0f172a; text-decoration:none;
+    width:42px; height:42px; border-radius:50%;
+    display:flex; align-items:center; justify-content:center;
+    font-weight:bold; box-shadow:0 4px 12px rgba(0,0,0,.4);
+  }
+  @media(max-width:600px){
+    table{font-size:.85rem} th,td{padding:7px 8px}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <h1>📚 Сетевая шпаргалка</h1>
+  <p>IP · маска · шлюз · DNS · HTTP/HTTPS · команды · типовые проблемы</p>
+</header>
+
+<nav>
+  <a href="#defs">1. Определения</a>
+  <a href="#ip">2. IP · маска · шлюз</a>
+  <a href="#http">3. HTTP vs HTTPS</a>
+  <a href="#win">4. Команды Windows</a>
+  <a href="#nix">5. Команды Linux/macOS</a>
+  <a href="#trouble">6. Проблемы</a>
+</nav>
+
+<main>
+
+<!-- 1 -->
+<section id="defs">
+  <h2>1. Основные определения сети</h2>
+  <div class="card"><b>Сеть</b> — группа устройств, соединённых каналами связи и обменивающихся данными по общим правилам (протоколам).</div>
+  <div class="card"><b>Протокол</b> — набор правил обмена данными (TCP, IP, HTTP, DNS и т.д.).</div>
+  <div class="card"><b>Пакет</b> — единица данных, передаваемая по сети.</div>
+  <div class="card"><b>LAN</b> (Local Area Network) — локальная сеть: дом, офис.</div>
+  <div class="card"><b>WAN</b> (Wide Area Network) — глобальная сеть, интернет.</div>
+  <div class="card"><b>MAC-адрес</b> — физический уникальный адрес сетевой карты (48 бит), вид <code>00:1A:2B:3C:4D:5E</code>.</div>
+  <div class="card"><b>IP-адрес</b> — логический адрес устройства в сети (см. раздел 2).</div>
+  <div class="card"><b>Порт</b> — число 0–65535, определяющее службу: <code>80</code> — HTTP, <code>443</code> — HTTPS, <code>53</code> — DNS, <code>22</code> — SSH.</div>
+  <div class="card"><b>DNS</b> — система доменных имён: переводит <code>google.com</code> → IP.</div>
+  <div class="card"><b>DHCP</b> — протокол автоматической выдачи IP, маски, шлюза и DNS.</div>
+  <div class="card"><b>NAT</b> — преобразование адресов: много устройств выходят в интернет через один публичный IP.</div>
+  <div class="card"><b>Роутер (маршрутизатор)</b> — пересылает пакеты между сетями.</div>
+  <div class="card"><b>Коммутатор (switch)</b> — соединяет устройства внутри одной сети.</div>
+  <div class="card"><b>Провайдер (ISP)</b> — организация, дающая доступ в интернет.</div>
+</section>
+
+<!-- 2 -->
+<section id="ip">
+  <h2>2. IP-адрес, маска подсети, шлюз</h2>
+
+  <h3>IP-адрес</h3>
+  <div class="card">
+    <b>IPv4</b> — 32 бита, 4 числа 0–255 через точку: <code>192.168.1.10</code>.<br>
+    <b>IPv6</b> — 128 бит, через двоеточия: <code>2001:db8::1</code>.<br>
+    Состоит из <b>адреса сети</b> + <b>адреса хоста</b>, границу задаёт маска.<br>
+    Бывает <b>частный</b> (внутренний) и <b>публичный</b> (в интернете).
+  </div>
+
+  <h3>Частные диапазоны IPv4</h3>
+  <table>
+    <tr><th>Диапазон</th><th>Маска</th><th>Кол-во адресов</th></tr>
+    <tr><td>10.0.0.0 – 10.255.255.255</td><td>10.0.0.0/8</td><td>≈16,7 млн</td></tr>
+    <tr><td>172.16.0.0 – 172.31.255.255</td><td>172.16.0.0/12</td><td>≈1 млн</td></tr>
+    <tr><td>192.168.0.0 – 192.168.255.255</td><td>192.168.0.0/16</td><td>65 534</td></tr>
+  </table>
+
+  <h3>Маска подсети</h3>
+  <div class="card">
+    Показывает, какая часть IP — <b>сеть</b>, а какая — <b>хост</b>. Непрерывные единицы в старших битах.
+  </div>
+  <table>
+    <tr><th>Маска</th><th>Префикс</th><th>Хостов в подсети</th></tr>
+    <tr><td>255.255.255.0</td><td>/24</td><td>254</td></tr>
+    <tr><td>255.255.255.128</td><td>/25</td><td>126</td></tr>
+    <tr><td>255.255.254.0</td><td>/23</td><td>510</td></tr>
+    <tr><td>255.255.0.0</td><td>/16</td><td>65 534</td></tr>
+  </table>
+  <div class="card">
+    Формула: <code>2^(32 − маска) − 2</code> (минус адрес сети и broadcast).
+  </div>
+
+  <h3>Пример разбора</h3>
+  <pre><code>IP:        192.168.1.10
+Маска:     255.255.255.0  (/24)
+Сеть:      192.168.1.0
+Хост:      .10
+Broadcast: 192.168.1.255
+Диапазон:  192.168.1.1 – 192.168.1.254
+Шлюз:      192.168.1.1  (обычно)</code></pre>
+
+  <h3>Шлюз по умолчанию (Default Gateway)</h3>
+  <div class="card">
+    Адрес устройства (обычно роутера), через которое уходят пакеты <b>за пределы</b> локальной сети. Обычно первый адрес подсети: <code>192.168.1.1</code> или <code>192.168.0.1</code>.<br>
+    Если шлюз неверен — интернет не работает, хотя локальная сеть может работать.
+  </div>
+
+  <h3>DNS-серверы</h3>
+  <div class="card">
+    Обычно <code>8.8.8.8</code> (Google), <code>1.1.1.1</code> (Cloudflare) или адрес провайдера.
+  </div>
+</section>
+
+<!-- 3 -->
+<section id="http">
+  <h2>3. HTTP vs HTTPS</h2>
+  <div class="card">
+    <b>HTTP</b> — протокол передачи гипертекста, данные идут <span class="bad">открытым текстом</span>.<br>
+    <b>HTTPS</b> — тот же HTTP, но поверх <b>шифрованного канала TLS/SSL</b>.
+  </div>
+  <table>
+    <tr><th>Параметр</th><th>HTTP</th><th>HTTPS</th></tr>
+    <tr><td>Шифрование</td><td class="bad">❌ нет</td><td class="ok">✅ TLS/SSL</td></tr>
+    <tr><td>Порт по умолчанию</td><td>80</td><td>443</td></tr>
+    <tr><td>Защита от перехвата</td><td class="bad">❌</td><td class="ok">✅</td></tr>
+    <tr><td>Подтверждение подлинности</td><td class="bad">❌</td><td class="ok">✅ сертификат</td></tr>
+    <tr><td>В браузере</td><td>«Не защищено»</td><td>🔒 замок</td></tr>
+    <tr><td>Где применяется</td><td>инфо-сайты (устар.)</td><td>логины, оплата, всё</td></tr>
+  </table>
+  <div class="card">
+    <b>Вывод:</b> для любых форм, логинов и оплат — <b>только HTTPS</b>. HTTPS = HTTP + шифрование; современные браузеры помечают HTTP-сайты как небезопасные.
+  </div>
+</section>
+
+<!-- 4 -->
+<section id="win">
+  <h2>4. Команды диагностики — Windows (cmd / PowerShell)</h2>
+  <table>
+    <tr><th>Команда</th><th>Что делает</th></tr>
+    <tr><td><code>ipconfig</code></td><td>IP, маска, шлюз</td></tr>
+    <tr><td><code>ipconfig /all</code></td><td>+ MAC, DNS, DHCP</td></tr>
+    <tr><td><code>ipconfig /flushdns</code></td><td>очистить кэш DNS</td></tr>
+    <tr><td><code>ipconfig /renew</code></td><td>запросить новый IP по DHCP</td></tr>
+    <tr><td><code>ping 8.8.8.8</code></td><td>доступность узла по IP</td></tr>
+    <tr><td><code>ping google.com</code></td><td>проверка DNS + доступности</td></tr>
+    <tr><td><code>ping -t 8.8.8.8</code></td><td>непрерывный ping (Ctrl+C — стоп)</td></tr>
+    <tr><td><code>tracert google.com</code></td><td>маршрут до узла</td></tr>
+    <tr><td><code>nslookup google.com</code></td><td>DNS-запрос</td></tr>
+    <tr><td><code>netstat -an</code></td><td>активные соединения и порты</td></tr>
+    <tr><td><code>route print</code></td><td>таблица маршрутизации</td></tr>
+    <tr><td><code>getmac</code></td><td>MAC-адреса</td></tr>
+    <tr><td><code>Test-NetConnection google.com -Port 443</code></td><td>проверка порта (PowerShell)</td></tr>
+  </table>
+</section>
+
+<!-- 5 -->
+<section id="nix">
+  <h2>5. Команды диагностики — Linux / macOS</h2>
+  <table>
+    <tr><th>Команда</th><th>Что делает</th></tr>
+    <tr><td><code>ip addr</code> / <code>ifconfig</code></td><td>IP-адреса интерфейсов</td></tr>
+    <tr><td><code>ip route</code> / <code>netstat -nr</code></td><td>таблица маршрутизации (шлюз)</td></tr>
+    <tr><td><code>ping -c 4 8.8.8.8</code></td><td>4 пакета</td></tr>
+    <tr><td><code>ping google.com</code></td><td>проверка DNS</td></tr>
+    <tr><td><code>traceroute google.com</code></td><td>маршрут</td></tr>
+    <tr><td><code>dig google.com</code></td><td>DNS-запрос</td></tr>
+    <tr><td><code>nslookup google.com</code></td><td>DNS-запрос</td></tr>
+    <tr><td><code>ss -tulnp</code></td><td>открытые порты</td></tr>
+    <tr><td><code>curl -I https://site.ru</code></td><td>заголовки HTTP-ответа</td></tr>
+    <tr><td><code>mtr google.com</code></td><td>ping + traceroute</td></tr>
+    <tr><td><code>scutil --dns</code></td><td>DNS-настройки (macOS)</td></tr>
+  </table>
+</section>
+
+<!-- 6 -->
+<section id="trouble">
+  <h2>6. Типовые проблемы и что проверять</h2>
+
+  <h3>Алгоритм «нет интернета»</h3>
+  <div class="card">
+    1. <code>ipconfig</code> — есть ли IP, маска, шлюз.<br>
+    2. <code>ping 192.168.1.1</code> (адрес шлюза) — доступен ли роутер.<br>
+    3. <code>ping 8.8.8.8</code> — есть ли выход в интернет.<br>
+    4. <code>ping google.com</code> — работает ли DNS.
+  </div>
+
+  <h3>Таблица «симптом → причина → действие»</h3>
+  <table>
+    <tr><th>Симптом</th><th>Причина</th><th>Действие</th></tr>
+    <tr><td>Нет IP</td><td>DHCP не работает</td><td><code>ipconfig /renew</code></td></tr>
+    <tr><td>IP 169.254.x.x</td><td>нет ответа DHCP</td><td>проверить роутер/кабель</td></tr>
+    <tr><td>Есть IP, нет интернета</td><td>шлюз / DNS</td><td><code>ping</code> шлюза, <code>nslookup</code></td></tr>
+    <tr><td>Ping по IP — ок, сайты — нет</td><td>DNS</td><td>сменить DNS на <code>8.8.8.8</code></td></tr>
+    <tr><td>Потери пакетов</td><td>Wi-Fi / канал</td><td><code>ping -t</code>, <code>tracert</code></td></tr>
+    <tr><td>Медленно</td><td>перегруз / помехи</td><td>тест скорости, 5 ГГц</td></tr>
+    <tr><td>HTTPS не открывается, HTTP — да</td><td>порт 443 / сертификат</td><td>проверить фаервол, дату</td></tr>
+  </table>
+
+  <h3>Быстрые решения</h3>
+  <div class="card">
+    <b>DNS не работает:</b> <code>nslookup google.com 8.8.8.8</code> — если так отвечает, а без указания сервера нет, то проблема в DNS. Решение: прописать <code>8.8.8.8</code> вручную.<br>
+    <b>Wi-Fi «есть», интернета нет:</b> проверьте, что IP не <code>169.254.x.x</code>.<br>
+    <b>Сайт открывается по IP, но не по имени:</b> тот же DNS.
+  </div>
+</section>
+
+</main>
+
+<a href="#" class="top" title="Наверх">↑</a>
+
+<footer>
+  Сетевая шпаргалка · один файл index.html · работает на GitHub Pages
+</footer>
+
+</body>
+</html>
