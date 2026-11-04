@@ -16,30 +16,44 @@
     background:var(--bg); color:var(--text); line-height:1.6;
   }
   header{
-    position:sticky; top:0; z-index:10;
-    background:rgba(15,23,42,.95); backdrop-filter:blur(6px);
-    border-bottom:1px solid var(--border); padding:14px 20px;
+    background:rgba(15,23,42,.98); border-bottom:1px solid var(--border);
+    padding:16px 20px; text-align:center;
   }
-  header h1{margin:0; font-size:1.25rem}
+  header h1{margin:0; font-size:1.3rem}
   header p{margin:4px 0 0; color:var(--muted); font-size:.85rem}
-  nav{
-    position:sticky; top:0; z-index:9; background:var(--panel);
-    border-bottom:1px solid var(--border);
-    display:flex; flex-wrap:wrap; gap:6px; padding:10px 20px;
+
+  /* ===== КНОПКИ ===== */
+  .buttons{
+    display:flex; flex-wrap:wrap; gap:8px;
+    justify-content:center; padding:16px 20px;
+    background:var(--panel); border-bottom:1px solid var(--border);
+    position:sticky; top:0; z-index:10;
   }
-  nav a{
-    color:var(--text); text-decoration:none; font-size:.85rem;
-    background:var(--panel2); padding:6px 12px; border-radius:999px;
-    border:1px solid var(--border); transition:.15s;
+  .buttons button{
+    font:inherit; font-size:.88rem; cursor:pointer;
+    background:var(--panel2); color:var(--text);
+    border:1px solid var(--border); border-radius:999px;
+    padding:8px 16px; transition:.15s;
   }
-  nav a:hover{background:var(--accent); color:#0f172a; border-color:var(--accent)}
+  .buttons button:hover{
+    background:#334155; border-color:var(--accent);
+  }
+  .buttons button.active{
+    background:var(--accent); color:#0f172a;
+    border-color:var(--accent); font-weight:600;
+  }
+
+  /* ===== СЕКЦИИ ===== */
   main{max-width:1000px; margin:0 auto; padding:24px 20px 60px}
-  section{margin-bottom:38px; scroll-margin-top:90px}
-  section h2{
+  .tab{display:none; animation:fade .25s ease}
+  .tab.active{display:block}
+  @keyframes fade{from{opacity:0; transform:translateY(6px)} to{opacity:1; transform:none}}
+
+  .tab h2{
     font-size:1.2rem; margin:0 0 14px; padding-bottom:8px;
     border-bottom:1px solid var(--border); color:var(--accent);
   }
-  section h3{margin:18px 0 8px; font-size:1rem; color:#fbbf24}
+  .tab h3{margin:18px 0 8px; font-size:1rem; color:#fbbf24}
   .card{
     background:var(--panel); border:1px solid var(--border);
     border-radius:10px; padding:14px 16px; margin-bottom:12px;
@@ -63,19 +77,12 @@
   th{background:var(--panel2); color:var(--accent)}
   tr:last-child td{border-bottom:none}
   .ok{color:var(--ok)} .bad{color:var(--bad)} .warn{color:var(--warn)}
-  ul{margin:6px 0 0 0; padding-left:20px}
   footer{
     text-align:center; color:var(--muted); font-size:.8rem;
     padding:20px; border-top:1px solid var(--border);
   }
-  .top{
-    position:fixed; right:20px; bottom:20px; z-index:20;
-    background:var(--accent); color:#0f172a; text-decoration:none;
-    width:42px; height:42px; border-radius:50%;
-    display:flex; align-items:center; justify-content:center;
-    font-weight:bold; box-shadow:0 4px 12px rgba(0,0,0,.4);
-  }
   @media(max-width:600px){
+    .buttons button{font-size:.8rem; padding:6px 12px}
     table{font-size:.85rem} th,td{padding:7px 8px}
   }
 </style>
@@ -84,22 +91,23 @@
 
 <header>
   <h1>📚 Сетевая шпаргалка</h1>
-  <p>IP · маска · шлюз · DNS · HTTP/HTTPS · команды · типовые проблемы</p>
+  <p>Нажмите кнопку — откроется нужный раздел</p>
 </header>
 
-<nav>
-  <a href="#defs">1. Определения</a>
-  <a href="#ip">2. IP · маска · шлюз</a>
-  <a href="#http">3. HTTP vs HTTPS</a>
-  <a href="#win">4. Команды Windows</a>
-  <a href="#nix">5. Команды Linux/macOS</a>
-  <a href="#trouble">6. Проблемы</a>
-</nav>
+<!-- ===== КНОПКИ ===== -->
+<div class="buttons">
+  <button data-tab="defs"     class="active">1. Определения</button>
+  <button data-tab="ip">2. IP · маска · шлюз</button>
+  <button data-tab="http">3. HTTP vs HTTPS</button>
+  <button data-tab="win">4. Команды Windows</button>
+  <button data-tab="nix">5. Команды Linux/macOS</button>
+  <button data-tab="trouble">6. Проблемы</button>
+</div>
 
 <main>
 
-<!-- 1 -->
-<section id="defs">
+<!-- ===== 1 ===== -->
+<div id="defs" class="tab active">
   <h2>1. Основные определения сети</h2>
   <div class="card"><b>Сеть</b> — группа устройств, соединённых каналами связи и обменивающихся данными по общим правилам (протоколам).</div>
   <div class="card"><b>Протокол</b> — набор правил обмена данными (TCP, IP, HTTP, DNS и т.д.).</div>
@@ -115,10 +123,10 @@
   <div class="card"><b>Роутер (маршрутизатор)</b> — пересылает пакеты между сетями.</div>
   <div class="card"><b>Коммутатор (switch)</b> — соединяет устройства внутри одной сети.</div>
   <div class="card"><b>Провайдер (ISP)</b> — организация, дающая доступ в интернет.</div>
-</section>
+</div>
 
-<!-- 2 -->
-<section id="ip">
+<!-- ===== 2 ===== -->
+<div id="ip" class="tab">
   <h2>2. IP-адрес, маска подсети, шлюз</h2>
 
   <h3>IP-адрес</h3>
@@ -148,9 +156,7 @@
     <tr><td>255.255.254.0</td><td>/23</td><td>510</td></tr>
     <tr><td>255.255.0.0</td><td>/16</td><td>65 534</td></tr>
   </table>
-  <div class="card">
-    Формула: <code>2^(32 − маска) − 2</code> (минус адрес сети и broadcast).
-  </div>
+  <div class="card">Формула: <code>2^(32 − маска) − 2</code> (минус адрес сети и broadcast).</div>
 
   <h3>Пример разбора</h3>
   <pre><code>IP:        192.168.1.10
@@ -168,13 +174,11 @@ Broadcast: 192.168.1.255
   </div>
 
   <h3>DNS-серверы</h3>
-  <div class="card">
-    Обычно <code>8.8.8.8</code> (Google), <code>1.1.1.1</code> (Cloudflare) или адрес провайдера.
-  </div>
-</section>
+  <div class="card">Обычно <code>8.8.8.8</code> (Google), <code>1.1.1.1</code> (Cloudflare) или адрес провайдера.</div>
+</div>
 
-<!-- 3 -->
-<section id="http">
+<!-- ===== 3 ===== -->
+<div id="http" class="tab">
   <h2>3. HTTP vs HTTPS</h2>
   <div class="card">
     <b>HTTP</b> — протокол передачи гипертекста, данные идут <span class="bad">открытым текстом</span>.<br>
@@ -192,10 +196,10 @@ Broadcast: 192.168.1.255
   <div class="card">
     <b>Вывод:</b> для любых форм, логинов и оплат — <b>только HTTPS</b>. HTTPS = HTTP + шифрование; современные браузеры помечают HTTP-сайты как небезопасные.
   </div>
-</section>
+</div>
 
-<!-- 4 -->
-<section id="win">
+<!-- ===== 4 ===== -->
+<div id="win" class="tab">
   <h2>4. Команды диагностики — Windows (cmd / PowerShell)</h2>
   <table>
     <tr><th>Команда</th><th>Что делает</th></tr>
@@ -213,10 +217,10 @@ Broadcast: 192.168.1.255
     <tr><td><code>getmac</code></td><td>MAC-адреса</td></tr>
     <tr><td><code>Test-NetConnection google.com -Port 443</code></td><td>проверка порта (PowerShell)</td></tr>
   </table>
-</section>
+</div>
 
-<!-- 5 -->
-<section id="nix">
+<!-- ===== 5 ===== -->
+<div id="nix" class="tab">
   <h2>5. Команды диагностики — Linux / macOS</h2>
   <table>
     <tr><th>Команда</th><th>Что делает</th></tr>
@@ -232,10 +236,10 @@ Broadcast: 192.168.1.255
     <tr><td><code>mtr google.com</code></td><td>ping + traceroute</td></tr>
     <tr><td><code>scutil --dns</code></td><td>DNS-настройки (macOS)</td></tr>
   </table>
-</section>
+</div>
 
-<!-- 6 -->
-<section id="trouble">
+<!-- ===== 6 ===== -->
+<div id="trouble" class="tab">
   <h2>6. Типовые проблемы и что проверять</h2>
 
   <h3>Алгоритм «нет интернета»</h3>
@@ -260,19 +264,38 @@ Broadcast: 192.168.1.255
 
   <h3>Быстрые решения</h3>
   <div class="card">
-    <b>DNS не работает:</b> <code>nslookup google.com 8.8.8.8</code> — если так отвечает, а без указания сервера нет, то проблема в DNS. Решение: прописать <code>8.8.8.8</code> вручную.<br>
+    <b>DNS не работает:</b> <code>nslookup google.com 8.8.8.8</code> — если так отвечает, а без указания сервера нет, проблема в DNS. Решение: прописать <code>8.8.8.8</code> вручную.<br>
     <b>Wi-Fi «есть», интернета нет:</b> проверьте, что IP не <code>169.254.x.x</code>.<br>
     <b>Сайт открывается по IP, но не по имени:</b> тот же DNS.
   </div>
-</section>
+</div>
 
 </main>
 
-<a href="#" class="top" title="Наверх">↑</a>
+<footer>Сетевая шпаргалка · один файл index.html · кнопки-вкладки</footer>
 
-<footer>
-  Сетевая шпаргалка · один файл index.html · работает на GitHub Pages
-</footer>
+<script>
+  // Логика переключения вкладок по кнопкам
+  const buttons = document.querySelectorAll('.buttons button');
+  const tabs    = document.querySelectorAll('.tab');
+
+  buttons.forEach(btn => {
+    btn.addEventListener('click', () => {
+      const id = btn.dataset.tab;
+
+      // снять active со всех кнопок и вкладок
+      buttons.forEach(b => b.classList.remove('active'));
+      tabs.forEach(t => t.classList.remove('active'));
+
+      // включить нужные
+      btn.classList.add('active');
+      document.getElementById(id).classList.add('active');
+
+      // прокрутить наверх
+      window.scrollTo({top:0, behavior:'smooth'});
+    });
+  });
+</script>
 
 </body>
 </html>
